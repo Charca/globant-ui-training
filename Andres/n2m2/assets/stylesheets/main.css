@@ -1,0 +1,8 @@
+#agenda {
+    table-layout: fixed;
+    word-wrap: normal;   
+}
+
+#agenda tr td:last {
+	 text-align: center;
+}

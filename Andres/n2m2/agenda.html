@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Modulo 1/2</title>
+<link rel="stylesheet" href="assets/stylesheets/main.css">
+<!-- Bootstrap -->
+<link href="assets/bootstrap-3.1.1-dist/css/bootstrap.min.css"
+	rel="stylesheet">
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="assets/js/jquery-2.1.1.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="assets/bootstrap-3.1.1-dist/js/bootstrap.min.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/agenda.js"></script>
+<script src="assets/js/agenda_table.js"></script>
+
+<link
+	href="assets/bootstrap-3.1.1-dist/css/extensions/sticky-footer-navbar.css"
+	rel="stylesheet">
+<link
+	href="assets/bootstrap-3.1.1-dist/css/extensions/justified-nav.css"
+	rel="stylesheet">
+</head>
+
+
+<body>
+
+	<div class="container">
+		<header id="header"> </header>
+
+		<article>
+			<h1>Agenda</h1>
+			<table id="agenda" class="table table-striped">
+				<thead>
+					<tr>
+						<th class="col-sm-2">#</th>
+						<th class="col-sm-2">Name</th>
+						<th class="col-sm-2">Address</th>
+						<th class="col-sm-2">Celphone</th>
+						<th class="col-sm-2">Telephone</th>
+						<th class="col-sm-2">Mail</th>
+						<th width="136px">Actions
+							<button id="add-user" type="button" class="btn btn-default btn-xs">
+								<span class="glyphicon glyphicon-user"></span> Add
+							</button>
+						</th>
+					</tr>
+					<tr id="edit-row">
+					<form name="contact">
+						<th>New
+						<input id='usr-id' type="hidden" name="id" class="form-control" placeholder="">
+						</th>
+						<th><input type="text" name="name" class="form-control" placeholder="" required></th>
+						<th><input type="text" name="address" class="form-control" placeholder="" ></th>
+						<th><input type="tel" name="celphone" class="form-control" placeholder="" ></th>
+						<th><input type="tel" name="phone" class="form-control" placeholder="" ></th>
+						<th><input type="email" name="mail" class="form-control" placeholder="" required></th>
+						<th>
+							<button id="save-user" type="submit" class="btn btn-default btn-md">
+								<span class="glyphicon glyphicon-save"></span> Save
+							</button>
+							<a id="cancel-user" class="btn btn-default btn-md">
+								<span class="glyphicon glyphicon-remove"></span>
+							</a>
+						</th>
+					</form>
+					</tr>
+				</thead>
+				<tbody>
+					
+				</tbody>
+			</table>
+		</article>
+	</div>
+	<footer id="footer"> </footer>
+
+</body>
+
+</html>
