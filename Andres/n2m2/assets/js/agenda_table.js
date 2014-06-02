@@ -1,7 +1,6 @@
 var btnEdit = '<button type="button" class="btn btn-default btn-sm editBtn"><span class="glyphicon glyphicon-pencil"></span></button>';
 var btnDel = '<button type="button" class="btn btn-default btn-sm delBtn"><span class="glyphicon glyphicon-remove-sign"></span></button>';
-var emptyRow = "<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>";
-var table = $('#agenda');
+var emptyRow = '<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
 
 $(document).ready(function() {
   
@@ -28,25 +27,6 @@ $(document).ready(function() {
     $( '#edit-row' ).fadeOut( 500 );
   });
   
-  $('.delBtn').mouseover( function () {
-    $( this ).parent().parent().addClass('danger');
-  });
-  
-  $('.delBtn').mouseout( function () {
-    $( this ).parent().parent().removeClass('danger');
-  });
-
-  $('.delBtn').click( function () {
-    localStorage.removeItem( $( this ).parent().parent().find('td:first').html() );
-    $( this ).parent().parent().remove();
-  });
-  
-  $('.editBtn').click( function () {
-    person = personFromRow($( this ).parent().parent());
-    loadFormWithPerson( person );
-    $( '#edit-row' ).fadeIn( 500 );
-  });
-  
 });
 
 var objToTable = [ 'id', 'name', 'address', 'celphone', 'phone', 'mail' ];
@@ -55,22 +35,22 @@ function addToTable (person) {
   
   var newRow = $( emptyRow );
   newRow.attr('id', person.id);
-  if ( $('#agenda tbody #' + person.id).length ) {
-    $('#agenda tbody #' + person.id).fadeOut( 1000 );
-    $('#agenda tbody #' + person.id).replaceWith( newRow );
+  var actualTr = $('#agenda tbody #' + person.id);
+  if ( actualTr.length ) {
+    actualTr.fadeOut( 500 );
+    actualTr.replaceWith( newRow );
   } else {
     $('#agenda tbody').append( newRow );
   }
   
-  newEBtn = createEditBtn();
-  newDBtn = createDelBtn();
-  newRow.find("td:last").append(newEBtn);
-  newRow.find("td:last").append(' ');
-  newRow.find("td:last").append(newDBtn).attr('align', 'center');
+  var newEBtn = createEditBtn( person.id );
+  var newDBtn = createDelBtn( person.id );
+  var actionTd = newRow.find("td:last");
+  actionTd.append( newEBtn ).append( ' ' ).append(newDBtn);
   newRow.find('td').each ( function (i) {
     $( this ).html(person[objToTable[i]]);
   });
-  //$('#agenda tr').find('td:last').attr('align', 'center');
+
 }
 
 function loadAgenda () {
@@ -86,24 +66,9 @@ function clearAgenda () {
     $("#agenda tbody tr").remove();
 }
 
-function falseSubmit () {
-  $( "form" ).submit(function( event ) {
-    if ( $( "input:first" ).val() === "correct" ) {
-    $( "span" ).text( "Validated..." ).show();
-    return;
-    }
-    $( "span" ).text( "Not valid!" ).show().fadeOut( 500 );
-    event.preventDefault();
-    });
-}
-
-function personFromRow ( row ) {
+function personFromId ( id ) {
   var tmpP = new Person();
-  row.find('td').each ( function (i) {
-    if (objToTable[i]) {
-      tmpP[objToTable[i]] = $( this ).html();
-    }
-  });
+  tmpP.unserialize( window.localStorage.getItem( id ) );
   return tmpP;
 }
 
@@ -113,27 +78,27 @@ function loadFormWithPerson ( person ) {
   }
 }
 
-function createDelBtn () {
+function createDelBtn ( itemId ) {
   var btn = $( btnDel );
   btn.mouseover( function () {
-    $( this ).parent().parent().addClass('danger');
+    $( '#' + itemId ).addClass('danger');
   });
   
   btn.mouseout( function () {
-    $( this ).parent().parent().removeClass('danger');
+    $( '#' + itemId ).removeClass('danger');
   });
 
   btn.click( function () {
-    localStorage.removeItem( $( this ).parent().parent().find('td:first').html() );
-    $( this ).parent().parent().remove();
+    localStorage.removeItem( itemId );
+    $( '#' + itemId ).remove();
   });
   return btn;
 }
 
-function createEditBtn () {
+function createEditBtn ( itemId ) {
   var btn = $( btnEdit );
   btn.click( function () {
-    person = personFromRow($( this ).parent().parent());
+    person = personFromId( itemId );
     loadFormWithPerson( person );
     $( '#edit-row' ).hide().fadeIn( 500 );
   });
