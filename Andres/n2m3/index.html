@@ -56,7 +56,7 @@
 	</script>
 	
 	<script type="text/template" id="flash-message">
-	<div class="alert alert-success">
+	<div class="alert <%= type ? type : "alert-success" %> flash-message">
 		<%= msg %>
 	</div>
 	</script>
@@ -105,23 +105,23 @@
 		<legend><%= person ? 'Edit' : 'New' %> Contact</legend>
 <div class="input-group">
 		<span class="input-group-addon">Name</span>
-		<input type="text" name="name" class="form-control" value=<%= person ? person.get('name') : '' %> required>
+		<input type="text" name="name" class="form-control" value="<%= person ? person.get('name') : '' %>" required>
 </div>
 <div class="input-group">
 		<span class="input-group-addon">Address</span>
-		<input type="text" name="address" class="form-control" value=<%= person ? person.get('address') : '' %> >
+		<input type="text" name="address" class="form-control" value="<%= person ? person.get('address') : '' %>" >
 </div>
 <div class="input-group">
 		<span class="input-group-addon">Cell Phone Number</span>
-		<input type="tel" name="cellphone" class="form-control" value=<%= person ? person.get('cellphone') : '' %> >
+		<input type="tel" name="cellphone" class="form-control" value="<%= person ? person.get('cellphone') : '' %>" >
 </div>
 <div class="input-group">
 		<span class="input-group-addon">Home Phone Number</span>
-		<input type="tel" name="phone" class="form-control" value=<%= person ? person.get('phone') : '' %> >
+		<input type="tel" name="phone" class="form-control" value="<%= person ? person.get('phone') : '' %>" >
 </div>
 <div class="input-group">
 		<span class="input-group-addon">EMail Address</span>
-		<input type="email" name="mail" class="form-control" value=<%= person ? person.get('mail') : '' %> required>
+		<input type="email" name="mail" class="form-control" value="<%= person ? person.get('mail') : '' %>" required>
 </div>
 		<br>
 <div class="input-group buttons-list">
@@ -194,6 +194,23 @@
 		/**************
 		//    VIEWS
 		 **************/
+		 
+		var FlashMsgView = Backbone.View.extend({
+			el : '.flashMessage',
+			render : function ( options ) {
+				if (options && options.msg) {
+					var flashMsg = _.template($('#flash-message').html(), {
+						msg : options.msg,
+						type : options.type
+					});
+				}
+				var fm = $(flashMsg);
+				this.$el.html(fm);
+				setTimeout(function (){
+					fm.fadeOut({ duration : 400, easing : 'linear' });
+				}, 5000);
+			}
+		});
 		
 		var AgendaView = Backbone.View
 				.extend({
@@ -202,28 +219,18 @@
 						'click .delete' : 'deleteUser'
 					},
 					deleteUser : function(ev) {
-						console.log('delte');
 						window.localStorage.removeItem(ev.currentTarget.dataset.userid);
-						this.render({
-							msg : 'User deleted!'
-						});
+						var flashMsgView = new FlashMsgView();
+						flashMsgView.render({msg : 'User deleted'});
+						this.render();
 					},
-					render : function ( options ) {
-						console.log(options);
-						if (options && options.msg) {
-							var flashMsg = _.template($('#flash-message').html(), {
-								msg : options.msg
-							});
-						}
+					render : function (s) {
 						var t = this;
 						var agenda = new Agenda(loadAgenda());
 						var template = _.template($('#person-list-tpl').html(),
 								{
 									agenda : agenda.models
 								});
-						if ( flashMsg ) {
-							template = flashMsg + template;
-						}
 						t.$el.html(template);
 					}
 				});
@@ -240,17 +247,24 @@
 			},
 			saveUser : function(ev) {
 				var userDetails = $(ev.currentTarget).serializeObject();
-				console.log(userDetails);
 				var person = new PersonModel(userDetails);
-				console.log(person);
 				if (person.save()) {
-					this.showList( { msg : 'User added OK!' } );
+					if (userDetails.id) {
+						this.showList( { msg : 'User edited OK!' } );
+					} else {
+						this.showList( { msg : 'User added OK!' } );
+					}
 				}
 				return false;
 			},
 			showList : function( options ) {
+				agendaView.render();
+				if (options && options.msg) {
+					var flashMsgView = new FlashMsgView();
+					flashMsgView.render({msg : options.msg});
+				}
 				router.navigate('', {
-					trigger : true
+					trigger : false
 				});
 			},
 			render : function(options) {
