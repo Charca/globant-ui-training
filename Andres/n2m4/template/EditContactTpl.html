@@ -1,0 +1,31 @@
+  <form name="contact" class="edit-contact-form">
+		<legend><%= person ? 'Edit' : 'New' %> Contact</legend>
+<div class="input-group">
+		<span class="input-group-addon">Name</span>
+		<input type="text" name="name" class="form-control" value="<%= person ? person.get('name') : '' %>" required>
+</div>
+<div class="input-group">
+		<span class="input-group-addon">Address</span>
+		<input type="text" name="address" class="form-control" value="<%= person ? person.get('address') : '' %>" >
+</div>
+<div class="input-group">
+		<span class="input-group-addon">Cell Phone Number</span>
+		<input type="tel" name="cellphone" class="form-control" value="<%= person ? person.get('cellphone') : '' %>" >
+</div>
+<div class="input-group">
+		<span class="input-group-addon">Home Phone Number</span>
+		<input type="tel" name="phone" class="form-control" value="<%= person ? person.get('phone') : '' %>" >
+</div>
+<div class="input-group">
+		<span class="input-group-addon">EMail Address</span>
+		<input type="email" name="mail" class="form-control" value="<%= person ? person.get('mail') : '' %>" required>
+</div>
+		<br>
+<div class="input-group buttons-list">
+		<button type="submit" class="btn btn-success"><%= person ? 'Update' : 'Create' %></button>
+		<% if(person) { %>
+			<input id="person-id" type="hidden" name="id" class="form-control" value="<%= person.id %>" />
+       		<button data-person-id="<%= person.id %>" class="btn cancel">Cancel</button>
+       	<% }; %>
+</div>
+	</form>

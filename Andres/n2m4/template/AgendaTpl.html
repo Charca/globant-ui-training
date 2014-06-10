@@ -1,0 +1,36 @@
+	<a href="#/new" class="btn btn-primary">New</a>
+    <hr />
+	<div class="table-responsive">
+	<table class="table table-striped">
+      <thead>
+        <tr>
+          <th class="col-sm-3">First Name</th>
+		  <th class="col-sm-3">Mail</th>
+		  <th class="col-sm-2"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% _.each(agenda, function(person) { %>
+          <tr>
+            <td><%= person.get('name') %></td>
+            <td><%= person.get('mail') %></td>
+            <td>
+				<a class="btn btn-default btn-sm" href="#<%= person.id %>">
+					&nbsp&nbsp
+					<span class="glyphicon glyphicon-eye-open"></span>
+					&nbsp&nbsp
+				</a>
+				&nbsp&nbsp			
+				<a class="btn btn-default btn-sm" href="#/edit/<%= person.id %>">
+					<span class="glyphicon glyphicon-pencil"></span>
+				</a>
+				&nbsp
+				<a class="btn btn-default btn-sm delete" href="#" data-userid="<%= person.id %>">
+					<span class="glyphicon glyphicon-remove"></span>
+				</a>
+			</td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+	</div>
