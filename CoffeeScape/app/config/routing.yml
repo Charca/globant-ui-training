@@ -1,0 +1,4 @@
+coffee_api:
+    resource: "@CoffeeApiBundle/Resources/config/routing.yml"
+    prefix:   /
+

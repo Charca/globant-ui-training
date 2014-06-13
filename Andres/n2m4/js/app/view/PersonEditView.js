@@ -4,7 +4,7 @@ define([
   'backbone',
   'text!templates/EditContactTpl.html',
   'app/model/PersonModel',
-  'app/view/AgendaView'
+  'app/view/AgendaView',
 ], function($, _, Backbone, contactEditTpl, PersonModel, AgendaView){
 	
 	$.fn.serializeObject = function()

@@ -17,7 +17,7 @@ define([
 	});
 	
 	var router = new AppRouter();
-	
+
     var initialize = function(){
 		
     	var currentView = { remove : function (){} };
