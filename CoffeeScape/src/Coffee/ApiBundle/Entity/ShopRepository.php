@@ -12,4 +12,14 @@ use Doctrine\ORM\EntityRepository;
  */
 class ShopRepository extends EntityRepository
 {
+	
+	public function findAllOrderedByName()
+	{
+		return $this->getEntityManager()
+		->createQuery(
+				'SELECT s FROM CoffeApiBundle:Shop s ORDER BY s.name ASC'
+		)
+		->getResult();
+	}
+	
 }

@@ -49,6 +49,11 @@ class Shop
      */
     private $contact;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="products")
+     * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
+     */
+    protected $category;
 
     /**
      * Get id
@@ -150,5 +155,28 @@ class Shop
     public function getContact()
     {
         return $this->contact;
+    }
+
+    /**
+     * Set category
+     *
+     * @param \Coffee\ApiBundle\Entity\Category $category
+     * @return Shop
+     */
+    public function setCategory(\Coffee\ApiBundle\Entity\Category $category = null)
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * Get category
+     *
+     * @return \Coffee\ApiBundle\Entity\Category 
+     */
+    public function getCategory()
+    {
+        return $this->category;
     }
 }
