@@ -16,5 +16,14 @@ coffee_api_shop_update:
     methods: [POST]
     
 coffee_api_shop_show:
-    pattern:  /shop/show/{id}
-    defaults: { _controller: CoffeeApiBundle:Shop:show }
+    pattern:  /shop/get/{id}
+    defaults: { _controller: CoffeeApiBundle:Shop:show, _format: ~  }
+    requirements:
+        _method: GET
+        id: "\d+"
+
+coffee_api_shop_list:
+    pattern:  /shop/list.{_format}
+    defaults: { _controller: CoffeeApiBundle:Shop:list, _format: ~  }
+    requirements:
+        _method: GET

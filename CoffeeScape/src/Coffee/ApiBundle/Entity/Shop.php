@@ -3,6 +3,8 @@
 namespace Coffee\ApiBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Expose;
 
 /**
  * Shop
@@ -18,6 +20,7 @@ class Shop
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Expose
      */
     private $id;
 
@@ -44,16 +47,20 @@ class Shop
 
     /**
      * @var string
-     *
      * @ORM\Column(name="contact", type="string", length=255)
      */
     private $contact;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Category", inversedBy="products")
-     * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
+     * @ORM\ManyToMany(targetEntity="Category", inversedBy="products")
+     * NOTNEEDED : ORM\JoinColumn(name="category_id", referencedColumnName="id")
      */
-    protected $category;
+    protected $categories;
+
+    public function __construct()
+    {
+        $this->categories = new ArrayCollection();
+    }
 
     /**
      * Get id

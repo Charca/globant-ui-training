@@ -2,14 +2,18 @@
 
 namespace Coffee\ApiBundle\Controller;
 
+use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use FOS\RestBundle\Controller\Annotations as Rest;
 
 use Coffee\ApiBundle\Entity\Shop;
 
-class ShopController extends Controller
+class ShopController extends FOSRestController
 {
     /**
      * @Route("/shop/add")
@@ -78,6 +82,31 @@ class ShopController extends Controller
     	}
     	
     	return new Response('This is shop ' . $shop->getName());
+    }
+
+    public function getShopAction($id)
+    {
+        $shop = $this->getDoctrine()
+            ->getRepository('CoffeeApiBundle:Shop')
+            ->find($id);
+        return $shop;
+    }
+
+    /**
+     * @Route("/shop/list")
+     * @Rest\View
+     */
+    public function listAction()
+    {
+        $shops = $this->getDoctrine()
+            ->getRepository('CoffeeApiBundle:Shop')
+            ->findAllAsArray();
+        if (!$shops) {
+            throw $this->createNotFoundException(
+                'No products found'
+            );
+        }
+        return array('shops' => $shops);
     }
 
 }

@@ -12,8 +12,11 @@ use Doctrine\ORM\EntityRepository;
  */
 class ShopRepository extends EntityRepository
 {
-	
-	public function findAllOrderedByName()
+
+    /**
+     * @return array
+     */
+    public function findAllOrderedByName()
 	{
 		return $this->getEntityManager()
 		->createQuery(
@@ -21,5 +24,15 @@ class ShopRepository extends EntityRepository
 		)
 		->getResult();
 	}
+
+    /**
+     * @return array
+     */
+    public function findAllAsArray()
+    {
+        return $this->getEntityManager()
+            ->createQuery('SELECT s FROM CoffeeApiBundle:Shop s')
+            ->getArrayResult();
+    }
 	
 }
