@@ -2,12 +2,14 @@
 
 namespace Coffee\ApiBundle\Controller;
 
+use Coffee\ApiBundle\Form\ShopType;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
@@ -18,20 +20,27 @@ class ShopController extends FOSRestController
     /**
      * @Route("/shop/add")
      * @Template()
+     *
      */
-    public function addAction()
+    public function addAction(Request $request)
     {
-    	$shop = new Shop();
-    	$shop->setName("Coffee Break");
-    	$shop->setLatitude(0);
-    	$shop->setLongitude(0);
-    	$shop->setContact("coffebreak@gmail.com");
-    	
-    	$em = $this->getDoctrine()->getManager();
-    	$em->persist($shop);
-    	$em->flush();
-    	
-    	return new Response('Created shop id '.$shop->getId());
+        $shop = new Shop();
+        $form = $this->createForm(new ShopType(), $shop);
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($shop);
+            $em->flush();
+            if ($form->get('save_and_add')->isClicked()) {
+                return $this->redirect($this->generateUrl('coffee_api_shop_add'));
+            } else {
+                return $this->redirect($this->generateUrl('coffee_api_shop_list'));
+            }
+            //return new Response('Created shop id '.$shop->getId());
+        } else {
+            return array('msg' => 'Que chupete!', 'form' => $form->createView());
+        }
+
     }
 
     /**

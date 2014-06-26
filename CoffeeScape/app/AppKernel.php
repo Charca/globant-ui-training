@@ -19,6 +19,7 @@ class AppKernel extends Kernel
             new Coffee\ApiBundle\CoffeeApiBundle(),
             new FOS\RestBundle\FOSRestBundle(),
             new JMS\SerializerBundle\JMSSerializerBundle(),
+            new Coffee\LoginBundle\CoffeeLoginBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

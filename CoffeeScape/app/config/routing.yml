@@ -1,3 +1,7 @@
+coffee_login:
+    resource: "@CoffeeLoginBundle/Resources/config/routing.yml"
+    prefix:   /
+
 coffee_api:
     resource: "@CoffeeApiBundle/Resources/config/routing.yml"
     prefix:   /

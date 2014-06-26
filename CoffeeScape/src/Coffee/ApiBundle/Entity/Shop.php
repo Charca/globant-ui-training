@@ -2,15 +2,19 @@
 
 namespace Coffee\ApiBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\Expose;
+use Symfony\Component\Validator\Constraints\Valid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Shop
  *
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="Coffee\ApiBundle\Entity\ShopRepository")
+ * @ExclusionPolicy("all")
  */
 class Shop
 {
@@ -26,28 +30,39 @@ class Shop
 
     /**
      * @var string
-     *
      * @ORM\Column(name="name", type="string", length=200)
+     * @Assert\NotBlank
+     * @Assert\Length(
+     *      min = "2",
+     *      max = "200",
+     *      minMessage = "Your first name must be at least {{ limit }} characters length",
+     *      maxMessage = "Your first name cannot be longer than {{ limit }} characters length"
+     * )
      */
     private $name;
 
     /**
      * @var string
-     *
      * @ORM\Column(name="latitude", type="decimal", precision=10, scale=6)
+     * @Assert\NotBlank(message="Lat must be setted")
      */
     private $latitude;
 
     /**
      * @var string
-     *
      * @ORM\Column(name="longitude", type="decimal", precision=10, scale=6)
+     * @Assert\NotBlank
      */
     private $longitude;
 
     /**
      * @var string
      * @ORM\Column(name="contact", type="string", length=255)
+     * @Assert\NotBlank
+     * @Assert\Email(
+     *      message = "The email '{{ value }}' is not valid.",
+     *      checkMX = true
+     * )
      */
     private $contact;
 
@@ -170,9 +185,9 @@ class Shop
      * @param \Coffee\ApiBundle\Entity\Category $category
      * @return Shop
      */
-    public function setCategory(\Coffee\ApiBundle\Entity\Category $category = null)
+    public function setCategories(\Coffee\ApiBundle\Entity\Category $category = null)
     {
-        $this->category = $category;
+        $this->categories = $category;
 
         return $this;
     }
@@ -182,8 +197,8 @@ class Shop
      *
      * @return \Coffee\ApiBundle\Entity\Category 
      */
-    public function getCategory()
+    public function getCategories()
     {
-        return $this->category;
+        return $this->categories;
     }
 }

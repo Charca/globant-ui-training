@@ -3,5 +3,24 @@
 {% block title %}CoffeeApiBundle:Shop:add{% endblock %}
 
 {% block body %}
-<h1>Welcome to the Shop:add page</h1>
+
+    <h1>Welcome to the Shop:add page</h1>
+
+    {#{{ form(form, {'attr': {'novalidate': 'novalidate'}}) }}#}
+<div class="container-fluid">
+    {{ form_start(form, { 'attr': {'novalidate':'novalidate'}}) }}
+    {{ form_errors(form) }}
+
+    {% for child in form.children %}
+        {% if child == form.save %}
+            {{ form_row(child, { 'attr': {'class': 'btn btn-default'} }) }}
+        {% else %}
+            {{ form_row(child) }}
+        {% endif %}
+    {% endfor %}
+
+    {{ form_rest(form) }}
+
+    {{ form_end(form) }}
+</div>
 {% endblock %}
