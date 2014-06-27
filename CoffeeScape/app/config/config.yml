@@ -23,6 +23,7 @@ framework:
         handler_id:  ~
     fragments:       ~
     http_method_override: true
+    translator: ~
 
 # Twig Configuration
 twig:
@@ -96,6 +97,11 @@ fos_rest:
             html: true
         failed_validation: HTTP_BAD_REQUEST
         default_engine: twig
+
+fos_user:
+    db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
+    firewall_name: main
+    user_class: Coffee\LoginBundle\Entity\User
 
 sensio_framework_extra:
     view:
