@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="utf-8">
+	<title>Backbone!</title>
+	
+	<!-- Bootstrap -->
+	<link href="assets/bootstrap-3.1.1-dist/css/bootstrap.min.css"
+		rel="stylesheet">
+	<link
+		href="assets/bootstrap-3.1.1-dist/css/extensions/sticky-footer-navbar.css"
+		rel="stylesheet">
+	<link
+		href="assets/bootstrap-3.1.1-dist/css/extensions/justified-nav.css"
+		rel="stylesheet">
+	<link
+		href="assets/stylesheets/main.css"
+		rel="stylesheet">
+	
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script src="assets/js/jquery-2.1.1.min.js"></script>
+	
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script src="assets/bootstrap-3.1.1-dist/js/bootstrap.min.js"></script>
+	
+	<script src="assets/js/Backbone_files/underscore.js"></script>
+	
+	<script src="assets/js/Backbone_files/Backbone.js"></script>
+	
+	<script src="assets/js/main.js"></script>
+	<script src="assets/js/agenda.js"></script>
+	<script src="assets/js/agenda_table.js"></script>
+
+</head>
+
+<body>
+
+	<div class="container">
+		<h1>Agenda</h1>
+		<hr />
+		<div class="flashMessage"></div>
+		<div class="page"></div>
+	</div>
+
+	<script type="text/template" id="person-view-tpl">
+	<button class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-sm">Small modal</button>
+	<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  		<div class="modal-dialog modal-sm">
+    		<div class="modal-content">
+      			<div class="panel panel-success">
+					
+				</div>
+    		</div>
+  		</div>
+	</div>
+	</script>
+	
+	<script type="text/template" id="flash-message">
+	<div class="alert <%= type ? type : "alert-success" %> flash-message">
+		<%= msg %>
+	</div>
+	</script>
+
+	<script type="text/template" id="person-list-tpl">
+	<a href="#/new" class="btn btn-primary">New</a>
+    <hr />
+	<div class="table-responsive">
+	<table class="table table-striped">
+      <thead>
+        <tr>
+          <th class="col-sm-3">First Name</th>
+		  <th class="col-sm-3">Mail</th>
+		  <th class="col-sm-2"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% _.each(agenda, function(person) { %>
+          <tr>
+            <td><%= person.get('name') %></td>
+            <td><%= person.get('mail') %></td>
+            <td>
+				<a class="btn btn-default btn-sm" href="#<%= person.id %>">
+					&nbsp&nbsp
+					<span class="glyphicon glyphicon-eye-open"></span>
+					&nbsp&nbsp
+				</a>
+				&nbsp&nbsp			
+				<a class="btn btn-default btn-sm" href="#/edit/<%= person.id %>">
+					<span class="glyphicon glyphicon-pencil"></span>
+				</a>
+				&nbsp
+				<a class="btn btn-default btn-sm delete" href="#" data-userid="<%= person.id %>">
+					<span class="glyphicon glyphicon-remove"></span>
+				</a>
+			</td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+	</div>
+	</script>
+
+	<script type="text/template" id="edit-contact-tpl">
+  <form name="contact" class="edit-contact-form">
+		<legend><%= person ? 'Edit' : 'New' %> Contact</legend>
+<div class="input-group">
+		<span class="input-group-addon">Name</span>
+		<input type="text" name="name" class="form-control" value="<%= person ? person.get('name') : '' %>" required>
+</div>
+<div class="input-group">
+		<span class="input-group-addon">Address</span>
+		<input type="text" name="address" class="form-control" value="<%= person ? person.get('address') : '' %>" >
+</div>
+<div class="input-group">
+		<span class="input-group-addon">Cell Phone Number</span>
+		<input type="tel" name="cellphone" class="form-control" value="<%= person ? person.get('cellphone') : '' %>" >
+</div>
+<div class="input-group">
+		<span class="input-group-addon">Home Phone Number</span>
+		<input type="tel" name="phone" class="form-control" value="<%= person ? person.get('phone') : '' %>" >
+</div>
+<div class="input-group">
+		<span class="input-group-addon">EMail Address</span>
+		<input type="email" name="mail" class="form-control" value="<%= person ? person.get('mail') : '' %>" required>
+</div>
+		<br>
+<div class="input-group buttons-list">
+		<button type="submit" class="btn btn-success"><%= person ? 'Update' : 'Create' %></button>
+		<% if(person) { %>
+			<input id="person-id" type="hidden" name="id" class="form-control" value="<%= person.id %>" />
+       		<button data-person-id="<%= person.id %>" class="btn cancel">Cancel</button>
+       	<% }; %>
+</div>
+	</form>
+
+	</script>
+	<script>
+		
+		/*************
+		*    MODELS 
+		**************/
+		
+		var Agenda = Backbone.Collection.extend({
+			model: PersonModel
+		});
+		
+		
+		var PersonModel = Backbone.Model.extend({
+
+			defaults : {
+				id : null,
+				name : '',
+				mail : '',
+				address : '',
+				cellphone : '',
+				phone : ''
+			},
+			save : function() {
+				if (!this.attributes.id) {
+					this.attributes.id = new Date().getTime();
+				}
+				window.localStorage.setItem(this.attributes.id, this.serialize(this));
+				return (window.localStorage.getItem(this.attributes.id) === this.serialize());
+			},
+			serialize : function() {
+				return JSON.stringify(this);
+			},
+			remove : function () {
+				localStorage.removeItem( this.attributes.id );
+			},
+			unserialize : function(json) {
+				if (!json && this.attributes.id) {
+					var json = window.localStorage.getItem(this.attributes.id);
+				} else {
+					//throw new Exception('Cacho');
+				}
+				var p = this.attributes;
+				JSON.parse(json, function(key, val) {
+					p[key] = val;
+				});
+			}
+		});
+		
+		function loadAgenda() {
+			var agenda = [];
+			for (var i = 0; i < window.localStorage.length; i++) {
+				var sObj = window.localStorage.getItem(localStorage.key(i));
+				var per = new PersonModel(JSON.parse(sObj));
+				agenda.push(per);
+			}
+			return agenda;
+		}
+
+		/**************
+		//    VIEWS
+		 **************/
+		 
+		var FlashMsgView = Backbone.View.extend({
+			el : '.flashMessage',
+			render : function ( options ) {
+				if (options && options.msg) {
+					var flashMsg = _.template($('#flash-message').html(), {
+						msg : options.msg,
+						type : options.type
+					});
+				}
+				var fm = $(flashMsg);
+				this.$el.html(fm);
+				setTimeout(function (){
+					fm.fadeOut({ duration : 400, easing : 'linear' });
+				}, 5000);
+			}
+		});
+		
+		var AgendaView = Backbone.View
+				.extend({
+					el : '.page',
+					events : {
+						'click .delete' : 'deleteUser'
+					},
+					deleteUser : function(ev) {
+						window.localStorage.removeItem(ev.currentTarget.dataset.userid);
+						var flashMsgView = new FlashMsgView();
+						flashMsgView.render({msg : 'User deleted'});
+						this.render();
+					},
+					render : function (s) {
+						var t = this;
+						var agenda = new Agenda(loadAgenda());
+						var template = _.template($('#person-list-tpl').html(),
+								{
+									agenda : agenda.models
+								});
+						t.$el.html(template);
+					}
+				});
+
+		var PersonDetailsView = Backbone.View.extend({
+
+		});
+
+		var PersonEditView = Backbone.View.extend({
+			el : '.page',
+			events : {
+				'submit .edit-contact-form' : 'saveUser',
+				'click .cancel' : 'showList'
+			},
+			saveUser : function(ev) {
+				var userDetails = $(ev.currentTarget).serializeObject();
+				var person = new PersonModel(userDetails);
+				if (person.save()) {
+					if (userDetails.id) {
+						this.showList( { msg : 'User edited OK!' } );
+					} else {
+						this.showList( { msg : 'User added OK!' } );
+					}
+				}
+				return false;
+			},
+			showList : function( options ) {
+				agendaView.render();
+				if (options && options.msg) {
+					var flashMsgView = new FlashMsgView();
+					flashMsgView.render({msg : options.msg});
+				}
+				router.navigate('', {
+					trigger : false
+				});
+			},
+			render : function(options) {
+				var that = this;
+				if (options.id) {
+					that.person = new PersonModel({
+						id : options.id
+					});
+					that.person.unserialize();
+					var template = _.template($('#edit-contact-tpl').html(), {
+						person : that.person
+					});
+					that.$el.html(template);
+				} else {
+					var template = _.template($('#edit-contact-tpl').html(), {
+						person : null
+					});
+					that.$el.html(template);
+				}
+			}
+		});
+
+		// ROUTER 
+
+		var Router = Backbone.Router.extend({
+			routes : {
+				'' : 'home',
+				'new' : 'edit',
+				'edit/:id' : 'edit'
+			}
+		});
+
+		var agendaView = new AgendaView();
+		var personEditView = new PersonEditView();
+		var router = new Router();
+
+		router.on('route:home', function() {
+			agendaView.render();
+		});
+		router.on('route:edit', function(id) {
+			personEditView.render({
+				id : id
+			});
+		})
+
+		Backbone.history.start();
+	</script>
+
+</body>
+
+</html>

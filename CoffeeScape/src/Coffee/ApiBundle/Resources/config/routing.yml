@@ -1,0 +1,29 @@
+coffee_api_homepage:
+    pattern:  /{name}
+    defaults: { _controller: CoffeeApiBundle:Default:index, name: "NONAME" }
+
+coffee_api_shop_add:
+    pattern:  /shop/add
+    defaults: { _controller: CoffeeApiBundle:Shop:add }
+    
+coffee_api_shop_edit:
+    pattern:  /shop/edit/{id}
+    defaults: { _controller: CoffeeApiBundle:Shop:edit }
+    
+coffee_api_shop_update:
+    pattern:  /shop/edit
+    defaults: { _controller: CoffeeApiBundle:Shop:edit }
+    methods: [POST]
+    
+coffee_api_shop_show:
+    pattern:  /shop/get/{id}
+    defaults: { _controller: CoffeeApiBundle:Shop:show, _format: ~  }
+    requirements:
+        _method: GET
+        id: "\d+"
+
+coffee_api_shop_list:
+    pattern:  /shop/list.{_format}
+    defaults: { _controller: CoffeeApiBundle:Shop:list, _format: ~  }
+    requirements:
+        _method: GET

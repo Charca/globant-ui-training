@@ -1,0 +1,28 @@
+#agenda {
+    table-layout: fixed;
+    word-wrap: normal;   
+}
+
+#agenda tr td:last {
+	 text-align: center;
+}
+
+.input-group-addon {
+    text-align: right;
+    width: 200px;
+    font-weight: bold;
+}
+
+.buttons-list {
+    padding-right: 15px;
+    text-align: right;
+    width: 370px;
+}
+
+.container {
+	width: 800px;
+}
+
+.edit-contact-form .input-group {
+	width: 100%;
+}

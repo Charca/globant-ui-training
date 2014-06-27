@@ -1,0 +1,10 @@
+{% if app.user|length > 0 %}
+Hello {{ app.user.username }}!
+{% else %}
+Hello anonimous visitor!
+{% endif %}
+
+<form>
+<input pattern="[a-zA-Z\u00C0-\u017F]+,\s[a-zA-Z\u00C0-\u017F]+$">
+<input type="submit">
+</form>
